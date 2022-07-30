@@ -45,6 +45,7 @@ Although this is a great start, it's just a start...
 With a little more effort, this ADT solution could be a great example and demonstration of all ADT capabilities.
 
 What the simulation is missing:
+- Clear visual feedback of incoming telemetry
 - Device telemetry is not updating cave temperatures
 - No visual representation in a 3D environment
 - Supporting 3 sensors instead of 1 sensor

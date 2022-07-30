@@ -1,0 +1,41 @@
+{
+    "@context": "dtmi:dtdl:context;2",
+    "@id": "dtmi:com:contoso:digital_factory:cheese_factory;1",
+    "@type": "Interface",
+    "displayName": "Cheese Factory - Interface Model",
+    "contents": [
+        {
+            "@type": "Property",
+            "name": "FactoryName",
+            "schema": "string",
+            "writable": true
+        },
+        {
+            "@type": "Property",
+            "name": "GeoLocation",
+            "schema": {
+                "@id": "dtmi:com:contoso:digital_factory:custom_schema:GeoCord;1",
+                "@type": "Object",
+                "fields": [
+                    {
+                        "@id": "dtmi:com:contoso:digital_factory:custom_schema:GeoCord:lat;1",
+                        "name": "Latitude",
+                        "schema": "double"
+                    },
+                    {
+                        "@id": "dtmi:com:contoso:digital_factory:custom_schema:GeoCord:lon;1",
+                        "name": "Longitude",
+                        "schema": "double"
+                    }
+                ]
+            }
+        },
+        {
+            "@type": "Relationship",
+            "@id": "dtmi:com:contoso:digital_factory:cheese_factory:rel_has_caves;1",
+            "name": "rel_has_caves",
+            "displayName": "Has caves",
+            "target": "dtmi:com:contoso:digital_factory:cheese_factory:cheese_cave;1"
+        }
+    ]
+}

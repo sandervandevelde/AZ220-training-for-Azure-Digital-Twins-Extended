@@ -1,0 +1,73 @@
+{
+    "@id": "dtmi:com:contoso:digital_factory:cheese_factory:cheese_cave;1",
+    "@type": "Interface",
+    "displayName": "Cheese Cave - Interface Model",
+    "@context": "dtmi:dtdl:context;2",
+    "contents": [
+        {
+            "@type": "Property",
+            "name": "inUse",
+            "schema": "boolean",
+            "description": "Indicates whether the Cheese Cave is in use",
+            "writable": true
+        },
+        {
+            "@type": "Property",
+            "name": "temperatureAlert",
+            "schema": "boolean",
+            "description": "Over/under desired temperature alert",
+            "writable": true
+        },
+        {
+            "@type": "Property",
+            "name": "humidityAlert",
+            "schema": "boolean",
+            "description": "Over/under desired humidity alert",
+            "writable": true
+        },
+        {
+            "@type": "Property",
+            "name": "fanAlert",
+            "schema": "boolean",
+            "description": "Fan failure alert",
+            "writable": true
+        },
+        {
+            "@type": ["Property", "Temperature"],
+            "name": "temperature",
+            "schema": "double",
+            "unit": "degreeFahrenheit",
+            "description": "Last measured temperature",
+            "writable": true
+        },
+        {
+            "@type": "Property",
+            "name": "humidity",
+            "schema": "double",
+            "description": "Last measured humidity",
+            "writable": true
+        },
+        {
+            "@type": ["Property", "Temperature"],
+            "name": "desiredTemperature",
+            "schema": "double",
+            "unit": "degreeFahrenheit",
+            "description": "Cave desired temperature in Fahrenheit",
+            "writable": true
+        },
+        {
+            "@type": "Property",
+            "name": "desiredHumidity",
+            "schema": "double",
+            "description": "Cave desired humidity in percent",
+            "writable": true
+        },
+        {
+            "@type": "Relationship",
+            "@id": "dtmi:com:contoso:digital_factory:cheese_cave:rel_has_devices;1",
+            "name": "rel_has_devices",
+            "displayName": "Has devices",
+            "target": "dtmi:com:contoso:digital_factory:cheese_factory:cheese_cave_device;1"
+        }
+    ]
+}

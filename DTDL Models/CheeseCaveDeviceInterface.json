@@ -1,0 +1,64 @@
+{
+    "@context": "dtmi:dtdl:context;2",
+    "@id": "dtmi:com:contoso:digital_factory:cheese_factory:cheese_cave_device;1",
+    "@type": "Interface",
+    "displayName": "Cheese Cave Device - Interface Model",
+    "contents": [
+        {
+            "@type": "Property",
+            "name": "sensorID",
+            "schema": "string",
+            "description": "Manufacturer Sensor ID",
+            "writable": true
+        },
+        {
+            "@type": ["Property", "Temperature"],
+            "name": "desiredTemperature",
+            "schema": "double",
+            "unit": "degreeFahrenheit",
+            "description": "Cave desired temperature in Fahrenheit",
+            "writable": true
+        },
+        {
+            "@type": "Property",
+            "name": "desiredHumidity",
+            "schema": "double",
+            "description": "Cave desired humidity in percent",
+            "writable": true
+        },
+        {
+            "@type": "Property",
+            "name": "fanAlert",
+            "schema": "boolean",
+            "description": "Fan failure alert",
+            "writable": true
+        },
+        {
+            "@type": "Property",
+            "name": "temperatureAlert",
+            "schema": "boolean",
+            "description": "Over/under desired temperature alert",
+            "writable": true
+        },
+        {
+            "@type": "Property",
+            "name": "humidityAlert",
+            "schema": "boolean",
+            "description": "Over/under desired humidity alert",
+            "writable": true
+        },
+        {
+            "@type": ["Telemetry", "Temperature"],
+            "name": "temperature",
+            "schema": "double",
+            "unit": "degreeFahrenheit",
+            "description": "Current measured temperature"
+        },
+        {
+            "@type": "Telemetry",
+            "name": "humidity",
+            "schema": "double",
+            "description": "Current measured humidity"
+        }
+    ]
+}

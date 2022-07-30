@@ -50,9 +50,79 @@ What the simulation is missing:
 - No visual representation in a 3D environment
 - Supporting 3 sensors instead of 1 sensor
 
-Some nice to haves are:
+Some nice-to-haves are:
 - Desired values in the model digital twins are not related to the iot hub device twins
 - Time Series Insights is becoming deprecated in 2025. It's time to move on to ADX.
 
+## Additions, step-by-step
 
+Here are some additions to the training so you can build a more appropiate ADT solution with 3D visualization.
+
+### Make incoming telemetry visual
+
+At the end of excercise 8 of the ADT training, is says:
+
+  "You should be able to see that the fanAlert, temperatureAlert and humidityAlert properties have been updated."
+
+Well, because the simulation device is quite slow in reaching points where alert values are changing it's not clear if the telemetry is actually arriving in the model.
+
+You can check the Azure Function logging output but we want to see proof in the Model graph.
+
+One other way to see if the sensor-th-55 twin is updated, is by looking at the metadata. 
+
+All properties have a lastUpdateTime. Refresh the graph a number of times .You should see the eg. fanAlert lastUpdateTime changing over time.
+
+Still this is not the most elegant way.
+
+#### Changing the model
+
+In the DTDL models folder, I added a updated model for the device.
+
+In this model, I added two extra properties:
+
+```
+{
+  "@type": ["Property", "Temperature"],
+  "name": "temperature",
+  "schema": "double",
+  "unit": "degreeFahrenheit",
+  "description": "Last ingested temperature"
+},
+{
+  "@type": "Property",
+  "name": "humidity",
+  "schema": "double",
+  "description": "Last ingested humidity"
+}
+```
+
+*Note*: I reused the same modelid. So you need to delete the original model first before adding this one.
+
+*Note*: After updating the model, it takes a few minutes before the model is available in the graph.
+
+We updated the ingestion Azure Function to fill these two properties:
+
+```
+var bodyJson = Encoding.ASCII.GetString((byte[])deviceMessage["body"]);
+JObject body = (JObject)JsonConvert.DeserializeObject(bodyJson);
+var temperature = body["temperature"].Value<double>();
+var humidity = body["humidity"].Value<double>();
+...
+patch.AppendReplace<double>("/temperature", temperature); // convert the JToken value to bool
+patch.AppendReplace<double>("/humidity", humidity); // convert the JToken value to bool
+```
+
+ADT twin propertis are persited in the graph representation and visible. 
+
+Once this is set in place, you will see the right temperature values shown when you refresh the graph.
+
+At this moment it feel a bit redundant. The device both has a temperature property and telemetry. The same goes for the humidity. This is true actually. We will fix this in the next section.
+
+### Propagate Azure Digital Twins events through the graph
+
+https://docs.microsoft.com/en-us/azure/digital-twins/tutorial-end-to-end#propagate-azure-digital-twins-events-through-the-graph
+
+### Visualisaton in 3D
+
+https://docs.microsoft.com/en-us/azure/digital-twins/how-to-use-3d-scenes-studio
 

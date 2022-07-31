@@ -101,6 +101,8 @@ I updated the version of the model:
 
 *Note*: So you need to delete all current twins and upload new once usin the XLSX. Note, this update can take a while. 
 
+*Note*: Because we update the modelID, the function listening to messages to be sent to TSI has to change too (it listens to specific model messages); 
+
 We also updated the ingestion Azure Function to fill these two properties:
 
 ```
@@ -157,3 +159,9 @@ https://github.com/Azure-Samples/digital-twins-samples/blob/main/AdtSampleApp/Sa
 https://docs.microsoft.com/en-us/azure/digital-twins/quickstart-3d-scenes-studio 
 https://docs.microsoft.com/en-us/azure/digital-twins/how-to-use-3d-scenes-studio
 
+
+#### Model
+
+The model is created with Paint3D in Windows 11. 
+
+It is not viewable in the Windows 10 3D Viewer.

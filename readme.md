@@ -45,7 +45,7 @@ Although this is a great start, it's just a start...
 With a little more effort, this ADT solution could be a great example and demonstration of all ADT capabilities.
 
 What the simulation is missing:
-- Clear visual feedback of incoming telemetry
+- Better visual feedback of incoming telemetry
 - Device telemetry is not updating cave temperatures
 - No visual representation in a 3D environment
 - Supporting 3 sensors instead of 1 sensor
@@ -58,7 +58,7 @@ Some nice-to-haves are:
 
 Here are some additions to the training so you can build a more appropiate ADT solution with 3D visualization.
 
-### Make incoming telemetry visual
+### Better visual feedback of incoming telemetry
 
 At the end of excercise 8 of the ADT training, is says:
 
@@ -95,12 +95,13 @@ In this model, I added two extra properties:
   "description": "Last ingested humidity"
 }
 ```
+I updated the version of the model:
 
-*Note*: I reused the same modelid. So you need to delete the original model first before adding this one.
+  dtmi:com:contoso:digital_factory:cheese_factory:cheese_cave_device;2
 
-*Note*: After updating the model, it takes a few minutes before the model is available in the graph.
+*Note*: So you need to delete all current twins and upload new once usin the XLSX. Note, this update can take a while. 
 
-We updated the ingestion Azure Function to fill these two properties:
+We also updated the ingestion Azure Function to fill these two properties:
 
 ```
 var bodyJson = Encoding.ASCII.GetString((byte[])deviceMessage["body"]);
@@ -118,11 +119,41 @@ Once this is set in place, you will see the right temperature values shown when 
 
 At this moment it feel a bit redundant. The device both has a temperature property and telemetry. The same goes for the humidity. This is true actually. We will fix this in the next section.
 
+### Support multiple devices
+
+Supporting multiple devices is technically done already.
+
+First, just register the other two devices (56 and 57) in the IoT Hub.
+
+The device twins are pointing the right modelId already. 
+
+Check the pproperties/metadata if both devices support temperature and humidity properties already.
+
+If not, you will see this error in the Azure function logging when it tries to patch a device:
+
+```
+2022-07-30T20:22:55.285 [Error] Service request failed.
+Status: 400 (Bad Request)
+
+Content:
+{"error":{"code":"JsonPatchInvalid","message":"humidity does not exist on component. Please provide a valid patch document. See section on update apis in the documentation https://aka.ms/adtv2twins."}}
+```
+
+First check the support for the properties in the other device twins again. This can take some time.
+
+Then, when the right connection string is used for the simulation, you will see the telemetry being ingested for the other two devices.
+
 ### Propagate Azure Digital Twins events through the graph
 
 https://docs.microsoft.com/en-us/azure/digital-twins/tutorial-end-to-end#propagate-azure-digital-twins-events-through-the-graph
 
+code example: to be integrated:
+https://github.com/Azure-Samples/digital-twins-samples/blob/main/AdtSampleApp/SampleFunctionsApp/ProcessDTRoutedData.cs
+
+
+
 ### Visualisaton in 3D
 
+https://docs.microsoft.com/en-us/azure/digital-twins/quickstart-3d-scenes-studio 
 https://docs.microsoft.com/en-us/azure/digital-twins/how-to-use-3d-scenes-studio
 

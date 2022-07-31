@@ -1,6 +1,6 @@
 {
     "@context": "dtmi:dtdl:context;2",
-    "@id": "dtmi:com:contoso:digital_factory:cheese_factory:cheese_cave_device;1",
+    "@id": "dtmi:com:contoso:digital_factory:cheese_factory:cheese_cave_device;2",
     "@type": "Interface",
     "displayName": "Cheese Cave Device - Interface Model",
     "contents": [

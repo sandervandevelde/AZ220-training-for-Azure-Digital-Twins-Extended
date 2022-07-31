@@ -19,8 +19,7 @@ namespace Contoso.AdtFunctions
     public static class HubToAdtFunction
     {
         //Your Digital Twins URL is stored in an application setting in Azure Functions.
-        private static readonly string adtInstanceUrl =
-            Environment.GetEnvironmentVariable("ADT_SERVICE_URL");
+        private static readonly string adtInstanceUrl = Environment.GetEnvironmentVariable("ADT_SERVICE_URL");
 
         // The code also follows a best practice of using a single, static,
         // instance of the HttpClient
@@ -69,17 +68,19 @@ namespace Contoso.AdtFunctions
                 // models, components, properties and relationships.
                 ManagedIdentityCredential cred =
                     new ManagedIdentityCredential("https://digitaltwins.azure.net");
+
                 DigitalTwinsClient client =
                     new DigitalTwinsClient(
                         new Uri(adtInstanceUrl),
                         cred,
                         new DigitalTwinsClientOptions { Transport = new HttpClientTransport(httpClient) });
+
                 log.LogInformation($"Azure digital twins service client connection created.");
 
                 // REVIEW event processing code below here
-                if (eventGridEvent != null && eventGridEvent.Data != null)
+                if (eventGridEvent != null 
+                        && eventGridEvent.Data != null)
                 {
-
                     // Read deviceId and temperature for IoT Hub JSON.
                     // Notice the use of JSON deserialization to access the event data.
                     // The message properties and systemProperties are
@@ -135,6 +136,7 @@ namespace Contoso.AdtFunctions
                         log.LogError($"patch unavailable: {ex.Message}");
                     }
 
+                    // deviceid IS the twinid in this case!
                     await client.UpdateDigitalTwinAsync(deviceId, patch);
 
                     // publish telemetry
@@ -144,6 +146,8 @@ namespace Contoso.AdtFunctions
                     // events. This mechanism ensures that the telemetry is
                     // available to be consumed by any downstream subscribers to
                     // the digital twins event route.
+
+                    // deviceid IS the twinid in this case!
                     await client.PublishTelemetryAsync(deviceId, null, bodyJson);
                 }
             }

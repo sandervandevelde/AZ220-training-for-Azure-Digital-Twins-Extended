@@ -16,9 +16,10 @@ using Azure.Identity;
 using System.Net.Http;
 using Azure.Core.Pipeline;
 
+
 namespace Consoto.AdtFunctions
 {
-    public static class GraphFunction
+    public static class FuncToGraphFunction
     {
         //Your Digital Twins URL is stored in an application setting in Azure Functions.
         private static readonly string adtServiceUrl = Environment.GetEnvironmentVariable("ADT_SERVICE_URL");
@@ -40,11 +41,13 @@ namespace Consoto.AdtFunctions
         // name of an app setting that contains the connection string. Adding
         // data to the outputEvents variable will publish it to the associated
         // Event Hub.
-        [FunctionName("GraphFunction")]
+        [FunctionName("FuncToGraphFunction")]
         public static async Task Run(
-            [EventHubTrigger("evh-az220-func2graph", Connection = "GRAPH_HUB_CONNECTIONSTRING")] EventData[] events,
+            [EventHubTrigger("evh-az220-adt2func", ConsumerGroup = "graph", Connection = "ADT_HUB_CONNECTIONSTRING")] EventData[] events,
             ILogger log)
         {
+            log.LogInformation($"Executing: {events.Length} events...");
+
             if (adtServiceUrl == null)
             {
                 log.LogError("Application setting \"ADT_SERVICE_URL\" not set");
@@ -69,7 +72,7 @@ namespace Consoto.AdtFunctions
                     // a Cheese Cave Device ADT twin - if not, logs that it isn't
                     // and then forces the method to complete asynchronously -
                     // this can make better use of resources.
-                    if ((string)eventData.Properties["cloudEvents:type"] == "microsoft.iot.telemetry" 
+                    if ((string)eventData.Properties["cloudEvents:type"] == "microsoft.iot.telemetry"
                             && (string)eventData.Properties["cloudEvents:dataschema"] == "dtmi:com:contoso:digital_factory:cheese_factory:cheese_cave_device;2")
                     {
                         // REVIEW TSI Event creation below here
@@ -96,11 +99,11 @@ namespace Consoto.AdtFunctions
 
                             //var credentials = new DefaultAzureCredential();
                             client = new DigitalTwinsClient(
-                                            new Uri(adtServiceUrl), 
-                                            cred, 
-                                            new DigitalTwinsClientOptions 
-                                            { 
-                                                Transport = new HttpClientTransport(httpClient) 
+                                            new Uri(adtServiceUrl),
+                                            cred,
+                                            new DigitalTwinsClientOptions
+                                            {
+                                                Transport = new HttpClientTransport(httpClient)
                                             });
 
                             log.LogInformation("ADT service client connection created.");

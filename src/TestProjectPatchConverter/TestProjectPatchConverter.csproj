@@ -14,7 +14,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\ConsoleApp1\AzureDigitalTwinsPatchConverter.csproj" />
+    <ProjectReference Include="..\PatchConverter\AzureDigitalTwinsPatchConverter.csproj" />
   </ItemGroup>
 
   <ItemGroup>

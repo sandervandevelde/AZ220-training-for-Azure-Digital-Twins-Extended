@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
     <TargetFramework>netcoreapp3.1</TargetFramework>
     <AzureFunctionsVersion>v3</AzureFunctionsVersion>
@@ -12,7 +12,7 @@
     <PackageReference Include="System.Net.Http" Version="4.3.4" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\ConsoleApp1\AzureDigitalTwinsPatchConverter.csproj" />
+    <ProjectReference Include="..\PatchConverter\AzureDigitalTwinsPatchConverter.csproj" />
   </ItemGroup>
   <ItemGroup>
     <None Update="host.json">

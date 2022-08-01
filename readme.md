@@ -153,6 +153,45 @@ code example: to be integrated:
 https://github.com/Azure-Samples/digital-twins-samples/blob/main/AdtSampleApp/SampleFunctionsApp/ProcessDTRoutedData.cs
 
 
+### Propagate Azure Digital Twins patch updates through the graph
+
+```
+{
+  "modelId": "dtmi:com:contoso:digital_factory:cheese_factory:cheese_cave_device;2",
+  "patch": [
+    {
+      "value": 0,
+      "path": "/fanAlert",
+      "op": "replace"
+    },
+    {
+      "value": 1,
+      "path": "/temperatureAlert",
+      "op": "replace"
+    },
+    {
+      "value": 1,
+      "path": "/humidityAlert",
+      "op": "replace"
+    },
+    {
+      "value": 81.18,
+      "path": "/temperature",
+      "op": "replace"
+    },
+    {
+      "value": 98.24,
+      "path": "/humidity",
+      "op": "replace"
+    }
+  ],
+  "EventProcessedUtcTime": "2022-08-01T13:20:28.1939131Z",
+  "PartitionId": 0,
+  "EventEnqueuedUtcTime": "2022-08-01T13:18:22.3950000Z"
+}
+
+```
+
 
 ### Visualisaton in 3D
 

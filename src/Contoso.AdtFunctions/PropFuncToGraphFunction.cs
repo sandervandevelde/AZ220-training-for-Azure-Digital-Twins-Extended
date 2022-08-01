@@ -19,7 +19,7 @@ using Azure.Core.Pipeline;
 
 namespace Contoso.AdtFunctions
 {
-    public static class FuncToGraphFunction
+    public static class PropFuncToGraphFunction
     {
         //Your Digital Twins URL is stored in an application setting in Azure Functions.
         private static readonly string adtServiceUrl = Environment.GetEnvironmentVariable("ADT_SERVICE_URL");
@@ -29,9 +29,9 @@ namespace Contoso.AdtFunctions
         private static readonly HttpClient httpClient = new HttpClient();
 
         // USES CONSUMERGROUP 'graph'
-        [FunctionName("FuncToGraphFunction")]
+        [FunctionName("PropFuncToGraphFunction")]
         public static async Task Run(
-            [EventHubTrigger("evh-az220-adt2func", ConsumerGroup = "graph", Connection = "ADT_HUB_CONNECTIONSTRING")] EventData[] events,
+            [EventHubTrigger("evh-az220-adtprops2func", ConsumerGroup = "graph", Connection = "ADT_HUB_PROP_CONNECTIONSTRING")] EventData[] events,
             ILogger log)
         {
             log.LogInformation($"Executing: {events.Length} events...");
@@ -60,8 +60,8 @@ namespace Contoso.AdtFunctions
                 }
                 log.LogInformation("***************");
 
-                var cloudEventsType = "microsoft.iot.telemetry";
-                var cloudEventsDataSchema = "dtmi:com:contoso:digital_factory:cheese_factory:cheese_cave_device;2";
+                var cloudEventsType = "microsoft.iot.telemetryIGNORE";
+                var cloudEventsDataSchema = "dtmi:com:contoso:digital_factory:cheese_factory:cheese_cave_device;2IGNORE";
 
                 if ((string)eventData.Properties["cloudEvents:type"] != cloudEventsType
                     || (string)eventData.Properties["cloudEvents:dataschema"] != cloudEventsDataSchema)
@@ -115,6 +115,9 @@ namespace Contoso.AdtFunctions
                                 var humidity = body["humidity"].Value<double>();
 
                                 var patch = new Azure.JsonPatchDocument();
+                                //patch.AppendReplace<bool>("/fanAlert", fanAlert); // already a bool
+                                //patch.AppendReplace<bool>("/temperatureAlert", temperatureAlert.Value<bool>()); // convert the JToken value to bool
+                                //patch.AppendReplace<bool>("/humidityAlert", humidityAlert.Value<bool>()); // convert the JToken value to bool
 
                                 patch.AppendReplace<double>("/temperature", temperature); // convert the JToken value to bool
                                 patch.AppendReplace<double>("/humidity", humidity); // convert the JToken value to bool

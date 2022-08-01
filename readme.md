@@ -189,7 +189,6 @@ https://github.com/Azure-Samples/digital-twins-samples/blob/main/AdtSampleApp/Sa
   "PartitionId": 0,
   "EventEnqueuedUtcTime": "2022-08-01T13:18:22.3950000Z"
 }
-
 ```
 
 

@@ -15,7 +15,7 @@ using Azure.DigitalTwins.Core;
 using Azure.Identity;
 using System.Net.Http;
 using Azure.Core.Pipeline;
-
+using AzureDigitalTwinsPatchConverter;
 
 namespace Contoso.AdtFunctions
 {
@@ -60,13 +60,12 @@ namespace Contoso.AdtFunctions
                 }
                 log.LogInformation("***************");
 
-                var cloudEventsType = "microsoft.iot.telemetryIGNORE";
-                var cloudEventsDataSchema = "dtmi:com:contoso:digital_factory:cheese_factory:cheese_cave_device;2IGNORE";
+                var cloudEventsType = "Microsoft.DigitalTwins.Twin.Update";
+                var cloudEventsDataSchema = "dtmi:com:contoso:digital_factory:cheese_factory:cheese_cave_device;2";
 
-                if ((string)eventData.Properties["cloudEvents:type"] != cloudEventsType
-                    || (string)eventData.Properties["cloudEvents:dataschema"] != cloudEventsDataSchema)
+                if ((string)eventData.Properties["cloudEvents:type"] != cloudEventsType)
                 {
-                    log.LogWarning($"This function only supports cloudEvents type '{cloudEventsType}' for devices with modelId '{cloudEventsDataSchema}'");
+                    log.LogWarning($"This function only supports cloudEvents type '{cloudEventsType}'");
 
                     await Task.Yield();
                     continue;
@@ -93,16 +92,25 @@ namespace Contoso.AdtFunctions
 
                         if (client != null)
                         {
-                            string twinId = eventData.Properties["cloudEvents:source"].ToString();
+                            string twinId = eventData.Properties["cloudEvents:subject"].ToString();
 
                             string messageBody =
                                 Encoding.UTF8.GetString(
                                     eventData.Body.Array,
                                     eventData.Body.Offset,
                                     eventData.Body.Count);
-                            JObject body = (JObject)JsonConvert.DeserializeObject(messageBody);
 
-                            log.LogInformation($"Body received: {messageBody}");
+                            log.LogInformation($"'{twinId}' Body received: {messageBody}");
+
+                            var convertedPatch = PatchConverter.GetPatch(messageBody);
+
+                            if (convertedPatch.modelId != cloudEventsDataSchema)
+                            {
+                                log.LogWarning($"This function only supports cloudevents dataschema '{cloudEventsDataSchema}'");
+
+                                await Task.Yield();
+                                continue;
+                            }
 
                             //Find and update parent Twin
                             string parentId = await AdtUtilities.FindParentAsync(client, twinId, "rel_has_devices", log);
@@ -111,16 +119,11 @@ namespace Contoso.AdtFunctions
                             {
                                 log.LogInformation($"PARENT {parentId} FOUND");
 
-                                var temperature = body["temperature"].Value<double>();
-                                var humidity = body["humidity"].Value<double>();
-
                                 var patch = new Azure.JsonPatchDocument();
-                                //patch.AppendReplace<bool>("/fanAlert", fanAlert); // already a bool
-                                //patch.AppendReplace<bool>("/temperatureAlert", temperatureAlert.Value<bool>()); // convert the JToken value to bool
-                                //patch.AppendReplace<bool>("/humidityAlert", humidityAlert.Value<bool>()); // convert the JToken value to bool
 
-                                patch.AppendReplace<double>("/temperature", temperature); // convert the JToken value to bool
-                                patch.AppendReplace<double>("/humidity", humidity); // convert the JToken value to bool
+                                patch.AppendReplace("/fanAlert", Convert.ToBoolean( convertedPatch.PatchItems.First(x => x.path == "/fanAlert").value));
+                                patch.AppendReplace("/temperatureAlert", Convert.ToBoolean(convertedPatch.PatchItems.First(x => x.path == "/temperatureAlert").value));
+                                patch.AppendReplace("/humidityAlert", Convert.ToBoolean(convertedPatch.PatchItems.First(x => x.path == "/humidityAlert").value));
 
                                 try
                                 {
@@ -138,7 +141,7 @@ namespace Contoso.AdtFunctions
                             {
                                 log.LogInformation($"NO PARENT FOUND");
                             }
-                        }       
+                        }
                     }
                     catch (Exception e)
                     {

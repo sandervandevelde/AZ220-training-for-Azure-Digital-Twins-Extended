@@ -26,6 +26,7 @@ namespace Consoto.AdtFunctions
         // name of an app setting that contains the connection string. Adding
         // data to the outputEvents variable will publish it to the associated
         // Event Hub.
+        // USES CONSUMERGROUP '$DEFAULT'
         [FunctionName("TelemetryFunction")]
         public static async Task Run(
             [EventHubTrigger("evh-az220-adt2func", Connection = "ADT_HUB_CONNECTIONSTRING")] EventData[] events,

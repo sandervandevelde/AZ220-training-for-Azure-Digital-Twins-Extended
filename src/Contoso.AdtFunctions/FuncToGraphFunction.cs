@@ -17,7 +17,7 @@ using System.Net.Http;
 using Azure.Core.Pipeline;
 
 
-namespace Consoto.AdtFunctions
+namespace Contoso.AdtFunctions
 {
     public static class FuncToGraphFunction
     {
@@ -28,19 +28,8 @@ namespace Consoto.AdtFunctions
         // instance of the HttpClient
         private static readonly HttpClient httpClient = new HttpClient();
 
-        // Take a moment to look at the Run method definition. The events
-        // parameter makes use of the EventHubTrigger attribute - the
-        // attribute's constructor takes the name of the event hub, the optional
-        // name of the consumer group ($Default is used if omitted), and the
-        // name of an app setting that contains the connection string. This
-        // configures the function trigger to respond to an event sent to an
-        // event hub event stream. As events is defined as an array of EventData,
-        // it can be populated with a batch of events.
-        // The next parameter, outputEvents has the EventHub attribute -
-        // the attribute's constructor takes the name of the event hub and the
-        // name of an app setting that contains the connection string. Adding
-        // data to the outputEvents variable will publish it to the associated
-        // Event Hub.
+
+        // USES CONSUMERGROUP 'graph'
         [FunctionName("FuncToGraphFunction")]
         public static async Task Run(
             [EventHubTrigger("evh-az220-adt2func", ConsumerGroup = "graph", Connection = "ADT_HUB_CONNECTIONSTRING")] EventData[] events,
@@ -75,21 +64,6 @@ namespace Consoto.AdtFunctions
                     if ((string)eventData.Properties["cloudEvents:type"] == "microsoft.iot.telemetry"
                             && (string)eventData.Properties["cloudEvents:dataschema"] == "dtmi:com:contoso:digital_factory:cheese_factory:cheese_cave_device;2")
                     {
-                        // REVIEW TSI Event creation below here
-                        // The event is Cheese Cave Device Telemetry
-                        // As the eventData.Body is defined as an ArraySegment,
-                        // rather than just an array, the portion of the underlying
-                        // array that contains the messageBody must be extracted,
-                        // and then deserialized.
-                        string messageBody =
-                            Encoding.UTF8.GetString(
-                                eventData.Body.Array,
-                                eventData.Body.Offset,
-                                eventData.Body.Count);
-                        JObject message = (JObject)JsonConvert.DeserializeObject(messageBody);
-
-                        log.LogInformation($"Body received: {messageBody}");
-
                         DigitalTwinsClient client;
                         // Authenticate on ADT APIs
                         try
@@ -97,7 +71,6 @@ namespace Consoto.AdtFunctions
                             ManagedIdentityCredential cred =
                                 new ManagedIdentityCredential("https://digitaltwins.azure.net");
 
-                            //var credentials = new DefaultAzureCredential();
                             client = new DigitalTwinsClient(
                                             new Uri(adtServiceUrl),
                                             cred,
@@ -107,6 +80,70 @@ namespace Consoto.AdtFunctions
                                             });
 
                             log.LogInformation("ADT service client connection created.");
+
+                            if (client != null)
+                            {
+                                log.LogInformation("***************");
+                                foreach(var p in eventData.Properties)
+                                {
+                                    log.LogInformation($"{p.Key} - {p.Value}");
+                                }
+                                log.LogInformation("***************");
+
+                                string twinId = eventData.Properties["cloudEvents:source"].ToString();
+
+                                // REVIEW TSI Event creation below here
+                                // The event is Cheese Cave Device Telemetry
+                                // As the eventData.Body is defined as an ArraySegment,
+                                // rather than just an array, the portion of the underlying
+                                // array that contains the messageBody must be extracted,
+                                // and then deserialized.
+                                string messageBody =
+                                    Encoding.UTF8.GetString(
+                                        eventData.Body.Array,
+                                        eventData.Body.Offset,
+                                        eventData.Body.Count);
+                                JObject body = (JObject)JsonConvert.DeserializeObject(messageBody);
+
+                                log.LogInformation($"Body received: {messageBody}");
+
+                                //Find and update parent Twin
+                                string parentId = await AdtUtilities.FindParentAsync(client, twinId, "rel_has_devices", log);
+
+//                                string parentId = await AdtUtilities.FindParentByQueryAsync(client, twinId, "rel_has_devices", log);
+
+                                if (parentId != null)
+                                {
+                                    log.LogInformation($"PARENT {parentId} FOUND");
+
+                                    var temperature = body["temperature"].Value<double>();
+                                    var humidity = body["humidity"].Value<double>();
+
+                                    var patch = new Azure.JsonPatchDocument();
+                                    //patch.AppendReplace<bool>("/fanAlert", fanAlert); // already a bool
+                                    //patch.AppendReplace<bool>("/temperatureAlert", temperatureAlert.Value<bool>()); // convert the JToken value to bool
+                                    //patch.AppendReplace<bool>("/humidityAlert", humidityAlert.Value<bool>()); // convert the JToken value to bool
+
+                                    patch.AppendReplace<double>("/temperature", temperature); // convert the JToken value to bool
+                                    patch.AppendReplace<double>("/humidity", humidity); // convert the JToken value to bool
+
+                                    try
+                                    {
+                                        log.LogInformation($"PATCHING: {patch}");
+                                    }
+                                    catch (System.Exception ex)
+                                    {
+                                        log.LogError($"patch unavailable: {ex.Message}");
+                                    }
+
+                                    // deviceid IS the twinid in this case!
+                                    await client.UpdateDigitalTwinAsync(parentId, patch);
+                                }
+                                else
+                                {
+                                    log.LogInformation($"NO PARENT FOUND");
+                                }
+                            }       
                         }
                         catch (Exception e)
                         {

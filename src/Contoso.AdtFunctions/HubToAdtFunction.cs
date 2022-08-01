@@ -124,9 +124,6 @@ namespace Contoso.AdtFunctions
                     patch.AppendReplace<bool>("/temperatureAlert", temperatureAlert.Value<bool>()); // convert the JToken value to bool
                     patch.AppendReplace<bool>("/humidityAlert", humidityAlert.Value<bool>()); // convert the JToken value to bool
 
-                    patch.AppendReplace<double>("/temperature", temperature); // convert the JToken value to bool
-                    patch.AppendReplace<double>("/humidity", humidity); // convert the JToken value to bool
-
                     try
                     {
                         log.LogInformation($"PATCHING: {patch.ToString()}");                        

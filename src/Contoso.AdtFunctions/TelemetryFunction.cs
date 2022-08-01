@@ -52,7 +52,7 @@ namespace Consoto.AdtFunctions
                     // and then forces the method to complete asynchronously -
                     // this can make better use of resources.
                     if ((string)eventData.Properties["cloudEvents:type"] == "microsoft.iot.telemetry" &&
-                        (string)eventData.Properties["cloudEvents:dataschema"] == "dtmi:com:contoso:digital_factory:cheese_factory:cheese_cave_device;2")
+                        (string)eventData.Properties["cloudEvents:dataschema"] == "dtmi:com:contoso:digital_factory:cheese_factory:cheese_cave_device;1")
                     {
                         // REVIEW TSI Event creation below here
                         // The event is Cheese Cave Device Telemetry

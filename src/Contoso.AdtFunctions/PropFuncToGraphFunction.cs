@@ -61,7 +61,7 @@ namespace Contoso.AdtFunctions
                 log.LogInformation("***************");
 
                 var cloudEventsType = "Microsoft.DigitalTwins.Twin.Update";
-                var cloudEventsDataSchema = "dtmi:com:contoso:digital_factory:cheese_factory:cheese_cave_device;2";
+                var cloudEventsDataSchema = "dtmi:com:contoso:digital_factory:cheese_factory:cheese_cave_device;1";
 
                 if ((string)eventData.Properties["cloudEvents:type"] != cloudEventsType)
                 {

@@ -1,5 +1,5 @@
 {
-    "modelId": "dtmi:com:contoso:digital_factory:cheese_factory:cheese_cave_device;2",
+    "modelId": "dtmi:com:contoso:digital_factory:cheese_factory:cheese_cave_device;1",
     "patch": [
         {
             "value": 0,
@@ -14,16 +14,6 @@
         {
             "value": 1,
             "path": "/humidityAlert",
-            "op": "replace"
-        },
-        {
-            "value": 81.18,
-            "path": "/temperature",
-            "op": "replace"
-        },
-        {
-            "value": 98.24,
-            "path": "/humidity",
             "op": "replace"
         }
     ],

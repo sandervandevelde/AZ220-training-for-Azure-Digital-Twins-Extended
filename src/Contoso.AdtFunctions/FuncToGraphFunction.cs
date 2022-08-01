@@ -28,7 +28,6 @@ namespace Contoso.AdtFunctions
         // instance of the HttpClient
         private static readonly HttpClient httpClient = new HttpClient();
 
-
         // USES CONSUMERGROUP 'graph'
         [FunctionName("FuncToGraphFunction")]
         public static async Task Run(
@@ -54,6 +53,25 @@ namespace Contoso.AdtFunctions
 
             foreach (EventData eventData in events)
             {
+                var cloudEventsType = "microsoft.iot.telemetry";
+                var cloudEventsDataSchema = "dtmi:com:contoso:digital_factory:cheese_factory:cheese_cave_device;2";
+
+                log.LogInformation("***************");
+                foreach (var p in eventData.Properties)
+                {
+                    log.LogInformation($"{p.Key} - {p.Value}");
+                }
+                log.LogInformation("***************");
+
+
+                if ((string)eventData.Properties["cloudEvents:type"] != cloudEventsType
+                    || (string)eventData.Properties["cloudEvents:dataschema"] != cloudEventsDataSchema)
+                {
+                    log.LogWarning($"This function only supports cloudEvents type '{cloudEventsType}' for devices with modelId '{cloudEventsDataSchema}'");
+
+                    return;
+                }
+
                 try
                 {
                     // REVIEW check telemetry below here
@@ -83,13 +101,6 @@ namespace Contoso.AdtFunctions
 
                             if (client != null)
                             {
-                                log.LogInformation("***************");
-                                foreach(var p in eventData.Properties)
-                                {
-                                    log.LogInformation($"{p.Key} - {p.Value}");
-                                }
-                                log.LogInformation("***************");
-
                                 string twinId = eventData.Properties["cloudEvents:source"].ToString();
 
                                 // REVIEW TSI Event creation below here

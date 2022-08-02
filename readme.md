@@ -63,23 +63,23 @@ Just provide a connectionstring (see the readme in the project for right 'appset
 
 ### Visual feedback of incoming telemetry?
 
-At the end of excercise 8 of the ADT training, is says:
+At the end of exercise 7 of the ADT training, it says:
 
-  "You should be able to see that the fanAlert, temperatureAlert and humidityAlert properties have been updated."
+"You should be able to see that the fanAlert, temperatureAlert and humidityAlert properties have been updated."
 
 Well, because the simulation device is quite slow in reaching points where alert values are changing it's not clear if the telemetry is actually arriving in the model.
 
 You can check the Azure Function logging output but we want to see proof in the Model graph.
 
-A smarter way to see if the sensor-th-55 twin is updated, is by looking at the metadata. 
+A smarter way to see if the sensor-th-55 twin is updated is by looking at the metadata.
 
-All properties have a lastUpdateTime. Refresh the graph a number of times .You should see the eg. fanAlert lastUpdateTime changing over time.
+All properties have a lastUpdateTime. Refresh the graph a number of times. You should see the eg. fanAlert lastUpdateTime changing over time.
 
 I also experimented with extending the device model to show temperature and humidity as properties.
 
-Still, updating the already excisting parent cave temperature and humidity is the most elegant way.
+Still, updating the already existing parent cave temperature and humidity is the most elegant way.
 
-In the end, that extended device was replace by updating the cave but you are free to play with this extension.
+In the end, that extended device was replaced by updating the cave but you are free to play with this extension.
 
 Check out the readme in the DTDL models section for more details.
 

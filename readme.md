@@ -35,7 +35,7 @@ After you have worked through the workshop, you will have created:
 - A live Azure Digital Twins environment around a cheese factory having three caves. Each cave has a temperature and humidity sensor
 - For cave 1, sensor 55 will be sending telemetry to an IoT Hub
 - An Azure Function picks up the device telemetry and sends it to the digital twin representation, both as property patches (for alert properties) and as telemetry (temperature and humidity)
-- Device twin telemetry events are routed, outputted to an eventhub endpoint using internal event routes 
+- Device twin telemetry events are routed, outputted to an Event Hub endpoint using internal event routes 
 - Events from that event route are picked up by another Azure Function and enriched so these can be picked up by Time Series Insights 
 
 Although this is a great start, it's still just a start...
@@ -47,7 +47,7 @@ What the simulation is missing:
 - Visual feedback of incoming telemetry?
 - Device telemetry is not updating cave temperature and humidity, propagate Azure Digital Twins events through the graph
 - Device properties are not updating cave alerts, propagate Azure Digital Twins properties through the graph
-- Visualisaton of the ADT model in a 3D environment
+- Visualisation of the ADT model in a 3D environment
 
 ## Additions, step-by-step
 

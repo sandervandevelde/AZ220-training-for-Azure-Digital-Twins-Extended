@@ -1,0 +1,308 @@
+{
+    "$schema": "https://github.com/microsoft/iot-cardboard-js/tree/main/schemas/3DScenesConfiguration/v1.0.0/3DScenesConfiguration.schema.json",
+    "configuration": {
+        "scenes": [
+            {
+                "id": "534410befe190aa0dc756b28cf8d56fc",
+                "displayName": "Cheese Factory 1",
+                "description": "Cheese Factory 1 Digital Twin",
+                "elements": [
+                    {
+                        "type": "TwinToObjectMapping",
+                        "id": "8e90111e3c2bbd9bc9c46ff3a8532edf",
+                        "displayName": "cave_1",
+                        "primaryTwinID": "cave_1",
+                        "objectIDs": [
+                            "node_id114"
+                        ]
+                    },
+                    {
+                        "type": "TwinToObjectMapping",
+                        "id": "9a31bc575e75acac9c5414c0db512426",
+                        "displayName": "cave_2",
+                        "primaryTwinID": "cave_2",
+                        "objectIDs": [
+                            "node_id108"
+                        ]
+                    },
+                    {
+                        "type": "TwinToObjectMapping",
+                        "id": "13d55ff1ffaa53cf6555f5b1a2c7dc39",
+                        "displayName": "cave_3",
+                        "primaryTwinID": "cave_3",
+                        "objectIDs": [
+                            "node_id102"
+                        ]
+                    }
+                ],
+                "behaviorIDs": [
+                    "eafec31f0c410679c891b34980d22b29",
+                    "efcc0c590c7684646d8cd12f832fd7ce",
+                    "a9645099294891ad0be59ac765a79d97",
+                    "728b0975cb4b791db8caaaa16076eedc"
+                ],
+                "assets": [
+                    {
+                        "type": "3DAsset",
+                        "url": "https://staz2203dsve220101.blob.core.windows.net/glbmodels/Factory123.glb"
+                    }
+                ]
+            }
+        ],
+        "behaviors": [
+            {
+                "id": "eafec31f0c410679c891b34980d22b29",
+                "displayName": "Temperature alert",
+                "datasources": [
+                    {
+                        "type": "ElementTwinToObjectMappingDataSource",
+                        "elementIDs": [
+                            "73c854796d08d5b327d91c4650c19299",
+                            "370acddc832969fc74f784e02e10ea3b",
+                            "bc03e7311e6dfa9850bc66f951a2ef59",
+                            "c9461e1c730b826ee4ca21cb668f1106",
+                            "8e90111e3c2bbd9bc9c46ff3a8532edf",
+                            "9a31bc575e75acac9c5414c0db512426",
+                            "13d55ff1ffaa53cf6555f5b1a2c7dc39"
+                        ]
+                    }
+                ],
+                "visuals": [
+                    {
+                        "type": "ExpressionRangeVisual",
+                        "expressionType": "CategoricalValues",
+                        "valueExpression": "PrimaryTwin.temperatureAlert",
+                        "valueRanges": [
+                            {
+                                "id": "fac9478de31d06e2be8d7ecd994cbf47",
+                                "values": [
+                                    true
+                                ],
+                                "visual": {
+                                    "color": "#FEE440",
+                                    "iconName": "Frigid",
+                                    "labelExpression": "`Temperature alert: ${PrimaryTwin.temperatureAlert}`"
+                                }
+                            }
+                        ],
+                        "objectIDs": {
+                            "expression": "objectIDs"
+                        }
+                    }
+                ]
+            },
+            {
+                "id": "efcc0c590c7684646d8cd12f832fd7ce",
+                "displayName": "Humidity alert",
+                "datasources": [
+                    {
+                        "type": "ElementTwinToObjectMappingDataSource",
+                        "elementIDs": [
+                            "73c854796d08d5b327d91c4650c19299",
+                            "370acddc832969fc74f784e02e10ea3b",
+                            "bc03e7311e6dfa9850bc66f951a2ef59",
+                            "c9461e1c730b826ee4ca21cb668f1106",
+                            "8e90111e3c2bbd9bc9c46ff3a8532edf",
+                            "9a31bc575e75acac9c5414c0db512426",
+                            "13d55ff1ffaa53cf6555f5b1a2c7dc39"
+                        ]
+                    }
+                ],
+                "visuals": [
+                    {
+                        "type": "ExpressionRangeVisual",
+                        "expressionType": "CategoricalValues",
+                        "valueExpression": "PrimaryTwin.humidityAlert",
+                        "valueRanges": [
+                            {
+                                "id": "95d9ac2ae480ab343c23814aab8fb06e",
+                                "values": [
+                                    true
+                                ],
+                                "visual": {
+                                    "color": "#33A1FD",
+                                    "iconName": "SpeedHigh",
+                                    "labelExpression": "`Humidity alert: ${PrimaryTwin.humidityAlert}`"
+                                }
+                            }
+                        ],
+                        "objectIDs": {
+                            "expression": "objectIDs"
+                        }
+                    }
+                ]
+            },
+            {
+                "id": "a9645099294891ad0be59ac765a79d97",
+                "displayName": "Fan alert",
+                "datasources": [
+                    {
+                        "type": "ElementTwinToObjectMappingDataSource",
+                        "elementIDs": [
+                            "73c854796d08d5b327d91c4650c19299",
+                            "370acddc832969fc74f784e02e10ea3b",
+                            "bc03e7311e6dfa9850bc66f951a2ef59",
+                            "c9461e1c730b826ee4ca21cb668f1106",
+                            "8e90111e3c2bbd9bc9c46ff3a8532edf",
+                            "9a31bc575e75acac9c5414c0db512426",
+                            "13d55ff1ffaa53cf6555f5b1a2c7dc39"
+                        ]
+                    }
+                ],
+                "visuals": [
+                    {
+                        "type": "ExpressionRangeVisual",
+                        "expressionType": "CategoricalValues",
+                        "valueExpression": "PrimaryTwin.fanAlert",
+                        "valueRanges": [
+                            {
+                                "id": "9d8a9c9d0bdf658aa88f8e23d487407d",
+                                "values": [
+                                    true
+                                ],
+                                "visual": {
+                                    "color": "#C32F27",
+                                    "iconName": "Asterisk",
+                                    "labelExpression": "`Fan alert: ${PrimaryTwin.fanAlert}`"
+                                }
+                            }
+                        ],
+                        "objectIDs": {
+                            "expression": "objectIDs"
+                        }
+                    }
+                ]
+            },
+            {
+                "id": "728b0975cb4b791db8caaaa16076eedc",
+                "displayName": "Legend",
+                "datasources": [
+                    {
+                        "type": "ElementTwinToObjectMappingDataSource",
+                        "elementIDs": [
+                            "73c854796d08d5b327d91c4650c19299",
+                            "370acddc832969fc74f784e02e10ea3b",
+                            "bc03e7311e6dfa9850bc66f951a2ef59",
+                            "c9461e1c730b826ee4ca21cb668f1106",
+                            "8e90111e3c2bbd9bc9c46ff3a8532edf",
+                            "9a31bc575e75acac9c5414c0db512426",
+                            "13d55ff1ffaa53cf6555f5b1a2c7dc39",
+                            "47e52e6f38f25da68b3ec21801edc4af"
+                        ]
+                    }
+                ],
+                "visuals": [
+                    {
+                        "type": "Popover",
+                        "title": "",
+                        "widgets": [
+                            {
+                                "id": "23643b93beb1c30d5365ed41f97dac10",
+                                "type": "Gauge",
+                                "valueExpression": "PrimaryTwin.temperature",
+                                "widgetConfiguration": {
+                                    "label": "Last temperature",
+                                    "valueRanges": [
+                                        {
+                                            "values": [
+                                                0,
+                                                55
+                                            ],
+                                            "visual": {
+                                                "color": "#C32F27"
+                                            },
+                                            "id": "1d5dc28abe4d953f6386e75c73cb2c9d"
+                                        },
+                                        {
+                                            "values": [
+                                                55,
+                                                65
+                                            ],
+                                            "visual": {
+                                                "color": "#FEE440"
+                                            },
+                                            "id": "975aae800ca5d8e48d24ae6279029881"
+                                        },
+                                        {
+                                            "values": [
+                                                65,
+                                                100
+                                            ],
+                                            "visual": {
+                                                "color": "#C32F27"
+                                            },
+                                            "id": "89ce804f5c09b2cdf69a641e5a271ae9"
+                                        }
+                                    ],
+                                    "units": "Fahrenheit"
+                                }
+                            },
+                            {
+                                "id": "4bb0989c1eab5b4cac037b7f86ece272",
+                                "type": "Gauge",
+                                "valueExpression": "PrimaryTwin.humidity",
+                                "widgetConfiguration": {
+                                    "label": "Last Humidity",
+                                    "valueRanges": [
+                                        {
+                                            "values": [
+                                                0,
+                                                69
+                                            ],
+                                            "visual": {
+                                                "color": "#C32F27"
+                                            },
+                                            "id": "929384a2535afd9aa4caff5a19f3f9ea"
+                                        },
+                                        {
+                                            "values": [
+                                                69,
+                                                89
+                                            ],
+                                            "visual": {
+                                                "color": "#33A1FD"
+                                            },
+                                            "id": "74bd6640947e3df493b961c0dd3be98f"
+                                        },
+                                        {
+                                            "values": [
+                                                89,
+                                                101
+                                            ],
+                                            "visual": {
+                                                "color": "#C32F27"
+                                            },
+                                            "id": "3d793d9fe2ee81109b8de5eba978300e"
+                                        }
+                                    ],
+                                    "units": "Percentaqge"
+                                }
+                            }
+                        ],
+                        "objectIDs": {
+                            "expression": "meshIDs"
+                        }
+                    }
+                ]
+            }
+        ],
+        "layers": [
+            {
+                "id": "d03309d032415195944c9c301333be90",
+                "behaviorIDs": [
+                    "a9645099294891ad0be59ac765a79d97",
+                    "efcc0c590c7684646d8cd12f832fd7ce",
+                    "eafec31f0c410679c891b34980d22b29"
+                ],
+                "displayName": "alerts"
+            },
+            {
+                "id": "69e5d0cdfb90af67b3193a34e9fb668f",
+                "behaviorIDs": [
+                    "728b0975cb4b791db8caaaa16076eedc"
+                ],
+                "displayName": "legends"
+            }
+        ]
+    }
+}

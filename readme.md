@@ -6,59 +6,58 @@ This device simulation is part of the AZ220 Digital twins training as seen at th
 
   https://docs.microsoft.com/en-us/learn/paths/extend-iot-solutions-by-using-azure-digital-twins/
 
-There, you will be introduced into Azure Digital Twins.
+There, you will be introduced into extending your Azure IoT solution with Azure Digital Twins.
 
 This is part of the AZ 220 Azure IoT Developer exam available at:
 
   https://docs.microsoft.com/en-us/certifications/exams/az-220
 
-The complete training lab can be found here:
+The original, complete, training lab can be found here:
 
   https://github.com/MicrosoftLearning/AZ-220-Microsoft-Azure-IoT-Developer/tree/master/Allfiles/Labs/19-Azure%20Digital%20Twins
 
-The instructions of this lab are available here:
+The original instructions of this lab are available here:
 
   https://github.com/MicrosoftLearning/AZ-220-Microsoft-Azure-IoT-Developer/blob/master/Instructions/Labs/LAB_AK_19-azure-digital-twins.md 
 
-Below we will be introduced to a number of additial features which turn the training material in a more complete solution.
+Below we will be introduced to a number of additial features which turn the training material into a more complete solution.
 
-## Device simulation, changes to the code
-
-Regarding the device simulation, some visual changes have been made but the same messages are sent and the same logic is used.
-
-Just provide a connectionstring (see readme for right appsettings file format) and fire up the console app.
-
-## Original Training material
+## Original Training material, entended
 
 The training material provided is a decent starting point for getting familiar with Azure Digital Twins.
 
 After you have worked through the workshop, you will have created:
 
 - A live Azure Digital Twins environment around a cheese factory having three caves. Each cave has a temperature and humidity sensor
-- For cave 1, a sensor is sending telemetry to an IoT Hub
-- An Azure Function picks up the device telemetry and sends it to the digital twin representation, both as property patches (for alerts) and telemetry (temperature and humidity)
-- Device twin telemetry events are outputted to an eventhub using internal event routes 
-- Event from that event route are picked up by another Azure Function and enriched so it can be picked up by Time Series Insights 
+- For cave 1, sensor 55 will be sending telemetry to an IoT Hub
+- An Azure Function picks up the device telemetry and sends it to the digital twin representation, both as property patches (for alert properties) and as telemetry (temperature and humidity)
+- Device twin telemetry events are routed, outputted to an eventhub endpoint using internal event routes 
+- Events from that event route are picked up by another Azure Function and enriched so these can be picked up by Time Series Insights 
 
-Although this is a great start, it's just a start...
+Although this is a great start, it's still just a start...
 
-With a little more effort, this ADT solution could be a great example and demonstration of all ADT capabilities.
+With a little more effort, this ADT solution could be a great example and demonstration more exciting ADT capabilities.
 
 What the simulation is missing:
-- Better visual feedback of incoming telemetry
-- Device telemetry is not updating cave temperatures
-- No visual representation in a 3D environment
-- Supporting 3 sensors instead of 1 sensor
-
-Some nice-to-haves are:
-- Desired values in the model digital twins are not related to the iot hub device twins
-- Time Series Insights is becoming deprecated in 2025. It's time to move on to ADX.
+- More elaborate device simulation, supporting multiple devices
+- Visual feedback of incoming telemetry?
+- Device telemetry is not updating cave temperature and humidity, propagate Azure Digital Twins events through the graph
+- Device properties are not updating cave alerts, propagate Azure Digital Twins properties through the graph
+- Visualisaton of the ADT model in a 3D environment
 
 ## Additions, step-by-step
 
-Here are some additions to the training so you can build a more appropiate ADT solution with 3D visualization.
+Here are the additions to the training so you can build a more appropiate ADT solution with 3D visualization.
 
-### Better visual feedback of incoming telemetry
+### More elaborate device simulation, supporting multiple devices
+
+For the Device simulation, minor changes to the code are made.
+
+Some visual changes have been made but the original telemetry messages are still sent and the same logic (device interface) is used.
+
+Just provide a connectionstring (see the readme in the project for right 'appsettings.json' file format) and fire up the console app.
+
+### Visual feedback of incoming telemetry?
 
 At the end of excercise 8 of the ADT training, is says:
 
@@ -68,92 +67,36 @@ Well, because the simulation device is quite slow in reaching points where alert
 
 You can check the Azure Function logging output but we want to see proof in the Model graph.
 
-One other way to see if the sensor-th-55 twin is updated, is by looking at the metadata. 
+A smarter way to see if the sensor-th-55 twin is updated, is by looking at the metadata. 
 
 All properties have a lastUpdateTime. Refresh the graph a number of times .You should see the eg. fanAlert lastUpdateTime changing over time.
 
-Still this is not the most elegant way.
+I also experimented with extending the device model to show temperature and humidity as properties.
 
-#### Changing the model
+Still, updating the already excisting parent cave temperature and humidity is the most elegant way.
 
-In the DTDL models folder, I added a updated model for the device.
+In the end, that extended device was replace by updating the cave but you are free to play with this extension.
 
-In this model, I added two extra properties:
+Check out the readme in the DTDL models section for more details.
 
-```
-{
-  "@type": ["Property", "Temperature"],
-  "name": "temperature",
-  "schema": "double",
-  "unit": "degreeFahrenheit",
-  "description": "Last ingested temperature"
-},
-{
-  "@type": "Property",
-  "name": "humidity",
-  "schema": "double",
-  "description": "Last ingested humidity"
-}
-```
-I updated the version of the model:
+### Device telemetry is not updating cave temperature and humidity, propagate Azure Digital Twins events through the graph
 
-  dtmi:com:contoso:digital_factory:cheese_factory:cheese_cave_device;2
+From a Digital Twins point of view, we are modelling the real world so we are not interested in device telemetry, we want to know the temperature in the caves.
 
-*Note*: So you need to delete all current twins and upload new once usin the XLSX. Note, this update can take a while. 
+So, updating the cave properties, based on the child device telemetry is the right way to do this.
 
-*Note*: Because we update the modelID, the function listening to messages to be sent to TSI has to change too (it listens to specific model messages); 
-
-We also updated the ingestion Azure Function to fill these two properties:
-
-```
-var bodyJson = Encoding.ASCII.GetString((byte[])deviceMessage["body"]);
-JObject body = (JObject)JsonConvert.DeserializeObject(bodyJson);
-var temperature = body["temperature"].Value<double>();
-var humidity = body["humidity"].Value<double>();
-...
-patch.AppendReplace<double>("/temperature", temperature); // convert the JToken value to bool
-patch.AppendReplace<double>("/humidity", humidity); // convert the JToken value to bool
-```
-
-ADT twin propertis are persited in the graph representation and visible. 
-
-Once this is set in place, you will see the right temperature values shown when you refresh the graph.
-
-At this moment it feel a bit redundant. The device both has a temperature property and telemetry. The same goes for the humidity. This is true actually. We will fix this in the next section.
-
-### Support multiple devices
-
-Supporting multiple devices is technically done already.
-
-First, just register the other two devices (56 and 57) in the IoT Hub.
-
-The device twins are pointing the right modelId already. 
-
-Check the pproperties/metadata if both devices support temperature and humidity properties already.
-
-If not, you will see this error in the Azure function logging when it tries to patch a device:
-
-```
-2022-07-30T20:22:55.285 [Error] Service request failed.
-Status: 400 (Bad Request)
-
-Content:
-{"error":{"code":"JsonPatchInvalid","message":"humidity does not exist on component. Please provide a valid patch document. See section on update apis in the documentation https://aka.ms/adtv2twins."}}
-```
-
-First check the support for the properties in the other device twins again. This can take some time.
-
-Then, when the right connection string is used for the simulation, you will see the telemetry being ingested for the other two devices.
-
-### Propagate Azure Digital Twins events through the graph
+There are already some example on how to do this using the ADT documentation:
 
 https://docs.microsoft.com/en-us/azure/digital-twins/tutorial-end-to-end#propagate-azure-digital-twins-events-through-the-graph
 
-code example: to be integrated:
+Here is an actual code example: 
 https://github.com/Azure-Samples/digital-twins-samples/blob/main/AdtSampleApp/SampleFunctionsApp/ProcessDTRoutedData.cs
 
+Based on this, I integrated a new Azure function, listening for device telemetry and updating parent caves.
 
-### Propagate Azure Digital Twins patch updates through the graph
+#### Propagate Azure Digital Twins patch updates through the graph
+
+To give an insight in the patch messages, look at this one:
 
 ```
 {
@@ -191,15 +134,39 @@ https://github.com/Azure-Samples/digital-twins-samples/blob/main/AdtSampleApp/Sa
 }
 ```
 
+I created a simple patch message converter so the JSON messages are more accessible in C#.
 
-### Visualisaton in 3D
+### Device properties are not updating cave alerts, propagate Azure Digital Twins properties through the graph
+
+The sames goes for device properties, the device alerts should be propagated through the hierachy to the parent cave.
+
+Because this is a separate ADT event, I routed these device model twin updates to another Azure Function.
+
+This is because the Digital twin update message event format differs form the format of a telemetry event. 
+
+### Visualisaton of the ADT model in a 3D environment
+
+Last but not least, the ADT graph builder tooling is great for building but it's not something to share with customers.
+
+Using Azure functions in conjunction with the ADT event routing, makes it possible to build a custom 'head' on top of the ADT ernvironment, up to a visualization using the Hololens.
+
+Luckely, the Azure Device Twins environment offers a basic but still powerfull 3D representation too.
 
 https://docs.microsoft.com/en-us/azure/digital-twins/quickstart-3d-scenes-studio 
 https://docs.microsoft.com/en-us/azure/digital-twins/how-to-use-3d-scenes-studio
 
+Based on the a 3D model created in Paint3D, I was able to upload it (you have to provide a separate Storage account blob container for this) and use it as representation.
 
 #### Model
 
 The model is created with Paint3D in Windows 11. 
 
 It is not viewable in the Windows 10 3D Viewer.
+
+## Nice to haves
+
+Some nice-to-haves are:
+- Desired values in the model digital twins are not related to the iot hub device twins
+- Time Series Insights is becoming deprecated in 2025. It's time to move on to ADX.
+
+It's up to you to contribute to this project. Pull requests are accepted.

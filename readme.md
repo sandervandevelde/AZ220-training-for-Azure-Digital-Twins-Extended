@@ -26,6 +26,10 @@ Below we will be introduced to a number of additial features which turn the trai
 
 The training material provided is a decent starting point for getting familiar with Azure Digital Twins.
 
+There are some addition possible to show the real value of Azure Digital Twins:
+
+![image](https://user-images.githubusercontent.com/694737/182363624-398e3f04-3fbe-4454-a20a-cea3068160f6.png)
+
 After you have worked through the workshop, you will have created:
 
 - A live Azure Digital Twins environment around a cheese factory having three caves. Each cave has a temperature and humidity sensor

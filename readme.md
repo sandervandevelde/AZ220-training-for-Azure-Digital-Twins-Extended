@@ -1,4 +1,4 @@
-# AZ 220 training
+# AZ 220 training for Azure Digital Twins - Extended
 
 ## Introduction
 

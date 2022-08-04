@@ -22,6 +22,12 @@ The original instructions of this lab are available here:
 
 Below we will be introduced to a number of additial features which turn the training material into a more complete solution.
 
+## blog post
+
+This code repository is the base for this blog post: https://sandervandevelde.wordpress.com/2022/08/04/extending-the-az-220-digital-twins-hands-on-lab-with-3d-visualization/
+
+There you will learn the story behind this repository and how it helps you to extend the original ADT lab.
+
 ## Original Training material, entended
 
 The training material provided is a decent starting point for getting familiar with Azure Digital Twins.

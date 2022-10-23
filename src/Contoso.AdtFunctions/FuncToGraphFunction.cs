@@ -8,13 +8,9 @@ using Microsoft.Azure.WebJobs;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
-
-using Microsoft.Azure.EventGrid.Models;
-using Microsoft.Azure.WebJobs.Extensions.EventGrid;
 using Azure.DigitalTwins.Core;
 using Azure.Identity;
 using System.Net.Http;
-using Azure.Core.Pipeline;
 
 
 namespace Contoso.AdtFunctions
@@ -79,7 +75,7 @@ namespace Contoso.AdtFunctions
                         //// Authenticate with Digital Twins
                         
                         var cred = new DefaultAzureCredential();
-                        var client = new DigitalTwinsClient(new Uri(adtInstanceUrl), cred);
+                        var client = new DigitalTwinsClient(new Uri(adtServiceUrl), cred);
 
                         if (client != null)
                         {
@@ -108,8 +104,8 @@ namespace Contoso.AdtFunctions
 
                                 var patch = new Azure.JsonPatchDocument();
 
-                                patch.AppendReplace<double>("/temperature", temperature); // convert the JToken value to bool
-                                patch.AppendReplace<double>("/humidity", humidity); // convert the JToken value to bool
+                                patch.AppendAdd<double>("/temperature", temperature); // convert the JToken value to bool
+                                patch.AppendAdd<double>("/humidity", humidity); // convert the JToken value to bool
 
                                 try
                                 {

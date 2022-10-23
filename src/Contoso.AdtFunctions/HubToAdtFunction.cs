@@ -8,7 +8,6 @@ using Microsoft.Extensions.Logging;
 using Azure.DigitalTwins.Core;
 using Azure.Identity;
 using System.Net.Http;
-using Azure.Core.Pipeline;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using System.Text;
@@ -58,22 +57,10 @@ namespace Contoso.AdtFunctions
 
             try
             {
-                // REVIEW authentication code below here
-                // Notice the use of the ManagedIdentityCredential class.
-                // This class attempts authentication using the managed identity
-                // that has been assigned to the deployment environment earlier.
-                // Once the credential is returned, it is used to construct an
-                // instance of the DigitalTwinsClient. The client contains
-                // methods to retrieve and update digital twin information, like
-                // models, components, properties and relationships.
-                ManagedIdentityCredential cred =
-                    new ManagedIdentityCredential("https://digitaltwins.azure.net");
-
-                DigitalTwinsClient client =
-                    new DigitalTwinsClient(
-                        new Uri(adtInstanceUrl),
-                        cred,
-                        new DigitalTwinsClientOptions { Transport = new HttpClientTransport(httpClient) });
+                //// Authenticate with Digital Twins
+                
+                var cred = new DefaultAzureCredential();
+                var client = new DigitalTwinsClient(new Uri(adtInstanceUrl), cred);
 
                 log.LogInformation($"Azure digital twins service client connection created.");
 
@@ -120,9 +107,9 @@ namespace Contoso.AdtFunctions
                     // are added to the patch as append or replace operations,
                     // and the ADT is then updated asynchronously.
                     var patch = new Azure.JsonPatchDocument();
-                    patch.AppendReplace<bool>("/fanAlert", fanAlert); // already a bool
-                    patch.AppendReplace<bool>("/temperatureAlert", temperatureAlert.Value<bool>()); // convert the JToken value to bool
-                    patch.AppendReplace<bool>("/humidityAlert", humidityAlert.Value<bool>()); // convert the JToken value to bool
+                    patch.AppendAdd<bool>("/fanAlert", fanAlert); // already a bool
+                    patch.AppendAdd<bool>("/temperatureAlert", temperatureAlert.Value<bool>()); // convert the JToken value to bool
+                    patch.AppendAdd<bool>("/humidityAlert", humidityAlert.Value<bool>()); // convert the JToken value to bool
 
                     try
                     {

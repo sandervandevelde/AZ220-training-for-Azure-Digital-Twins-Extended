@@ -6,15 +6,9 @@ using System.Threading.Tasks;
 using Microsoft.Azure.EventHubs;
 using Microsoft.Azure.WebJobs;
 using Microsoft.Extensions.Logging;
-using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
-
-using Microsoft.Azure.EventGrid.Models;
-using Microsoft.Azure.WebJobs.Extensions.EventGrid;
 using Azure.DigitalTwins.Core;
 using Azure.Identity;
 using System.Net.Http;
-using Azure.Core.Pipeline;
 using AzureDigitalTwinsPatchConverter;
 
 namespace Contoso.AdtFunctions
@@ -73,25 +67,17 @@ namespace Contoso.AdtFunctions
 
                 try
                 {
-                    DigitalTwinsClient client;
-                    // Authenticate on ADT APIs
                     try
                     {
-                        ManagedIdentityCredential cred =
-                            new ManagedIdentityCredential("https://digitaltwins.azure.net");
-
-                        client = new DigitalTwinsClient(
-                                        new Uri(adtServiceUrl),
-                                        cred,
-                                        new DigitalTwinsClientOptions
-                                        {
-                                            Transport = new HttpClientTransport(httpClient)
-                                        });
-
-                        log.LogInformation("ADT service client connection created.");
+                        //// Authenticate with Digital Twins
+                        
+                        var cred = new DefaultAzureCredential();
+                        var client = new DigitalTwinsClient(new Uri(adtServiceUrl), cred);
 
                         if (client != null)
                         {
+                            log.LogInformation("ADT service client connection created.");
+    
                             string twinId = eventData.Properties["cloudEvents:subject"].ToString();
 
                             string messageBody =
@@ -121,9 +107,9 @@ namespace Contoso.AdtFunctions
 
                                 var patch = new Azure.JsonPatchDocument();
 
-                                patch.AppendReplace("/fanAlert", Convert.ToBoolean( convertedPatch.PatchItems.First(x => x.path == "/fanAlert").value));
-                                patch.AppendReplace("/temperatureAlert", Convert.ToBoolean(convertedPatch.PatchItems.First(x => x.path == "/temperatureAlert").value));
-                                patch.AppendReplace("/humidityAlert", Convert.ToBoolean(convertedPatch.PatchItems.First(x => x.path == "/humidityAlert").value));
+                                patch.AppendAdd("/fanAlert", Convert.ToBoolean( convertedPatch.PatchItems.First(x => x.path == "/fanAlert").value));
+                                patch.AppendAdd("/temperatureAlert", Convert.ToBoolean(convertedPatch.PatchItems.First(x => x.path == "/temperatureAlert").value));
+                                patch.AppendAdd("/humidityAlert", Convert.ToBoolean(convertedPatch.PatchItems.First(x => x.path == "/humidityAlert").value));
 
                                 try
                                 {

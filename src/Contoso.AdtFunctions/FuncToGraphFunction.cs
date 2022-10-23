@@ -74,25 +74,17 @@ namespace Contoso.AdtFunctions
 
                 try
                 {
-                    DigitalTwinsClient client;
-                    // Authenticate on ADT APIs
                     try
                     {
-                        ManagedIdentityCredential cred =
-                            new ManagedIdentityCredential("https://digitaltwins.azure.net");
-
-                        client = new DigitalTwinsClient(
-                                        new Uri(adtServiceUrl),
-                                        cred,
-                                        new DigitalTwinsClientOptions
-                                        {
-                                            Transport = new HttpClientTransport(httpClient)
-                                        });
-
-                        log.LogInformation("ADT service client connection created.");
+                        //// Authenticate with Digital Twins
+                        
+                        var cred = new DefaultAzureCredential();
+                        var client = new DigitalTwinsClient(new Uri(adtInstanceUrl), cred);
 
                         if (client != null)
                         {
+                            log.LogInformation("ADT service client connection created.");
+
                             string twinId = eventData.Properties["cloudEvents:source"].ToString();
 
                             string messageBody =
